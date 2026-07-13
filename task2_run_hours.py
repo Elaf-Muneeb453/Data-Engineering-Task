@@ -52,8 +52,8 @@ def data_loading():
             .reset_index(drop=True)
         )
 
-        # print(result)
-
+        print(result)
+        
         return result
     except Exception as e:
         print(f"Error loading data: {e}")
