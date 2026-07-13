@@ -6,6 +6,7 @@ def data_loading():
     try:
         df = result_df.copy()
         df["hour_window"] = df["Timestamp"].dt.floor("h")
+        print(df["hour_window"])
 
         dg = df[df["Source Tag"].str.contains("DG", case=False, na=False)]
 
@@ -51,7 +52,7 @@ def data_loading():
             .reset_index(drop=True)
         )
 
-        print(result)
+        # print(result)
 
         return result
     except Exception as e:
