@@ -1,12 +1,15 @@
 import pandas as pd
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 
 
 df = pd.read_csv("Data_Engineering_Challenge.csv")
+df["Timestamp"] = pd.to_datetime(df["Timestamp"], unit = 's', utc=True)
 
 df.rename(
     columns={
         "Site Code": "site_code",
+        "Timestamp": "time_stamp",
+        "Source Tag": "source_tag",
         "Solar Output Current": "solar_output_current",
         "Total Load Current": "total_load_current",
         "Battery Total Current": "battery_total_current",
@@ -25,7 +28,15 @@ engine = create_engine(
     f"postgresql+psycopg2://{username}:{password}@{host}:{port}/{database}"
 )
 
-df.to_sql("sensor_data1", con=engine, if_exists="replace", index=False)
+df.to_sql("sensor_data", con=engine, if_exists="append", index=False)
 
 
 print("Data successfully imported into PostgreSQL!")
+
+# table_to_delete = "sensor_data4"
+
+# with engine.connect() as conn:
+#     conn.execute(text(f'DROP TABLE IF EXISTS "{table_to_delete}";'))
+#     conn.commit()
+
+# print(f"Table '{table_to_delete}' deleted.")

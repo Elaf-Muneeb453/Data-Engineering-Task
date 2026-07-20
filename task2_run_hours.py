@@ -6,7 +6,6 @@ def data_loading():
     try:
         df = result_df.copy()
         df["hour_window"] = df["Timestamp"].dt.floor("h")
-        print(df["hour_window"])
 
         dg = df[df["Source Tag"].str.contains("DG", case=False, na=False)]
 
@@ -17,7 +16,7 @@ def data_loading():
         )
 
         dg_result["source"] = "DG"
-        dg_result["run_hours"] = dg_result["Reading Count"] * 3 / 60
+        dg_result["run_hours"] = dg_result["Reading Count"] * 3.0 / 60
         
         
         solar = df[df["Source Tag"].str.contains("Solar", case=False, na=False)]
@@ -29,7 +28,7 @@ def data_loading():
         )
 
         solar_result["source"] = "Solar"
-        solar_result["run_hours"] = solar_result["Reading Count"] * 3 / 60
+        solar_result["run_hours"] = solar_result["Reading Count"] * 3.0 / 60
         
         battery = df[df["Source Tag"].str.contains("Battery", case=False, na=False)]
 
@@ -40,7 +39,7 @@ def data_loading():
         )
 
         battery_result["source"] = "Battery"
-        battery_result["run_hours"] = battery_result["Reading Count"] * 3 / 60
+        battery_result["run_hours"] = battery_result["Reading Count"] * 3.0 / 60
 
         result = pd.concat([dg_result, solar_result, battery_result], ignore_index=True)
 
