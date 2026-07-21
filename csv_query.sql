@@ -8,6 +8,7 @@ CREATE TABLE sensor_data (
     total_voltage FLOAT
 );
 
+-- TASK 2 
 SELECT
     site_code,
     date_trunc('hour', time_stamp) AS hourly_window,
@@ -15,7 +16,6 @@ SELECT
     ROUND((COUNT(CASE WHEN TRIM(source_tag) LIKE '%Solar%' THEN 1 END) * 3.0) / 60,2) AS solar_hours,
     ROUND((COUNT(CASE WHEN TRIM(source_tag) LIKE '%Battery%' THEN 1 END) * 3.0) / 60,2) AS battery_hours,
     ROUND((COUNT(CASE WHEN TRIM(source_tag) LIKE '%DG%' THEN 1 END) * 3.0) / 60,2) AS dg_hours
-
 FROM sensor_data
 GROUP BY
     site_code,
@@ -23,7 +23,7 @@ GROUP BY
 ORDER BY
     hourly_window;
 
-
+-- TASK 3
 SELECT
     site_code, 
     date_trunc('hour', time_stamp) AS hourly_window,
