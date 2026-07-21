@@ -12,20 +12,9 @@ SELECT
     site_code,
     date_trunc('hour', time_stamp) AS hourly_window,
 
-    ROUND(
-        (COUNT(CASE WHEN TRIM(source_tag) LIKE '%Solar%' THEN 1 END) * 3.0) / 60,
-        2
-    ) AS solar_hours,
-
-    ROUND(
-        (COUNT(CASE WHEN TRIM(source_tag) LIKE '%Battery%' THEN 1 END) * 3.0) / 60,
-        2
-    ) AS battery_hours,
-
-    ROUND(
-        (COUNT(CASE WHEN TRIM(source_tag) LIKE '%DG%' THEN 1 END) * 3.0) / 60,
-        2
-    ) AS dg_hours
+    ROUND((COUNT(CASE WHEN TRIM(source_tag) LIKE '%Solar%' THEN 1 END) * 3.0) / 60,2) AS solar_hours,
+    ROUND((COUNT(CASE WHEN TRIM(source_tag) LIKE '%Battery%' THEN 1 END) * 3.0) / 60,2) AS battery_hours,
+    ROUND((COUNT(CASE WHEN TRIM(source_tag) LIKE '%DG%' THEN 1 END) * 3.0) / 60,2) AS dg_hours
 
 FROM sensor_data
 GROUP BY
