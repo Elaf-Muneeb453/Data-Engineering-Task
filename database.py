@@ -33,10 +33,3 @@ df.to_sql("sensor_data", con=engine, if_exists="append", index=False)
 
 print("Data successfully imported into PostgreSQL!")
 
-# table_to_delete = "sensor_data4"
-
-# with engine.connect() as conn:
-#     conn.execute(text(f'DROP TABLE IF EXISTS "{table_to_delete}";'))
-#     conn.commit()
-
-# print(f"Table '{table_to_delete}' deleted.")
