@@ -8,6 +8,7 @@ CREATE TABLE sensor_data (
     total_voltage FLOAT
 );
 
+
 SELECT
     site_code,
     date_trunc('hour', time_stamp) AS hourly_window,
