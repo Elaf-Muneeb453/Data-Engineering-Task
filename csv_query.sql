@@ -9,7 +9,6 @@ CREATE TABLE sensor_data (
 );
 
 
-
 SELECT
     site_code,
     date_trunc('hour', time_stamp) AS hourly_window,
