@@ -8,31 +8,35 @@ CREATE TABLE sensor_data (
     total_voltage FLOAT
 );
 
--- TASK 2 
 SELECT
     site_code,
     date_trunc('hour', time_stamp) AS hourly_window,
+    CASE
+        WHEN TRIM(source_tag) LIKE '%DG%' THEN 'DG'
+        WHEN TRIM(source_tag) LIKE '%Solar%' THEN 'Solar'
+        WHEN TRIM(source_tag) LIKE '%Battery%' THEN 'Battery'
+    END AS source_tag,
+    ROUND((COUNT(*) * 3.0)/60, 2) AS run_hours,
+    AVG(
+        CASE 
+            WHEN TRIM(source_tag) LIKE '%DG%' THEN  (total_load_current*total_voltage)/1000.0
+            WHEN TRIM(source_tag) LIKE '%Battery%' THEN (battery_total_current*total_voltage)/1000.0
+            WHEN TRIM(source_tag) LIKE '%Solar%' THEN (solar_output_current*total_voltage)/1000.0
+        END
+    ) AS k_w
 
-    ROUND((COUNT(CASE WHEN TRIM(source_tag) LIKE '%Solar%' THEN 1 END) * 3.0) / 60,2) AS solar_hours,
-    ROUND((COUNT(CASE WHEN TRIM(source_tag) LIKE '%Battery%' THEN 1 END) * 3.0) / 60,2) AS battery_hours,
-    ROUND((COUNT(CASE WHEN TRIM(source_tag) LIKE '%DG%' THEN 1 END) * 3.0) / 60,2) AS dg_hours
 FROM sensor_data
+WHERE 
+    TRIM(source_tag) LIKE '%DG%' OR
+    TRIM(source_tag) LIKE '%Solar%' OR
+    TRIM(source_tag) LIKE '%Battery%'
 GROUP BY
     site_code,
-    date_trunc('hour', time_stamp)
+    date_trunc('hour', time_stamp),
+    CASE 
+        WHEN TRIM(source_tag) LIKE '%DG%' THEN 'DG'
+        WHEN TRIM(source_tag) LIKE '%Solar%' THEN 'Solar'
+        WHEN TRIM(source_tag) LIKE '%Battery%' THEN 'Battery'
+    END
 ORDER BY
-    hourly_window;
-
--- TASK 3
-SELECT
-    site_code, 
-    date_trunc('hour', time_stamp) AS hourly_window,
-    COALESCE(ROUND(AVG(CASE WHEN TRIM(source_tag) LIKE '%DG%' THEN (total_load_current*total_voltage)/1000 END)::numeric,2),0) AS dg_kw,
-    COALESCE(ROUND(AVG(CASE WHEN TRIM(source_tag) LIKE '%Battery%' THEN (battery_total_current*total_voltage)/1000 END)::numeric,2),0) AS battery_kw,
-    COALESCE(ROUND(AVG(CASE WHEN TRIM(source_tag) LIKE '%Solar%' THEN (solar_output_current*total_voltage)/1000 END)::numeric,2),0) AS solar_kw
-FROM sensor_data
-GROUP BY
-    site_code,
-    date_trunc('hour', time_stamp)
-ORDER BY
-    hourly_window;
+    hourly_window
